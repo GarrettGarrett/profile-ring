@@ -178,10 +178,16 @@ export function ProfilePhotoEditor() {
       onDrop={handleDrop}
     >
       {isDragging && (
-        <div className="fixed inset-0 bg-primary/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div 
+          className="fixed inset-0 bg-primary/20 backdrop-blur-sm flex items-center justify-center z-50 cursor-pointer"
+          onClick={() => {
+            setDragCounter(0)
+            setIsDragging(false)
+          }}
+        >
           {/* Top Left */}
           <CornerIndicator className="top-4 left-4 rotate-[135deg]" />
-          {/* Top Right - adjusted rotation */}
+          {/* Top Right */}
           <CornerIndicator className="top-4 right-4 rotate-[225deg]" />
           {/* Bottom Left */}
           <CornerIndicator className="bottom-4 left-4 rotate-45" />
