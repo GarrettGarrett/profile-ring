@@ -6,11 +6,11 @@ import { cn } from "@/lib/utils";
 import { Providers } from "@/utilities/providers";
 import { Toaster } from "@/components/ui/toaster";
 
-const APP_NAME = "Skoolalerts.com"
-const DEFAULT_TITLE = `${APP_NAME} - Never Miss a Green Square!`
-const DEFAULT_DESCRIPTION = `${APP_NAME}  Keep Your Streak Alive!`
+const APP_NAME = "Profile Rings"
+const DEFAULT_TITLE = `${APP_NAME} - Add a colored ring to your profile picture`
+const DEFAULT_DESCRIPTION = `${APP_NAME} - Add a colored ring to your profile picture`
 const DEFAULT_IMAGE = "/og_image.png"
-const DOMAIN = "https://skoolalerts.com"
+const DOMAIN = "https://profile-ring.vercel.app"
 
 const fontHeading = Roboto({
   subsets: ['latin'],
