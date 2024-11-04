@@ -79,33 +79,41 @@ export function ProfilePhotoEditor() {
     }
   }
 
-  const handleImageDragStart = (e: React.MouseEvent) => {
+  const handleImageDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     if (!canvasRef.current || !image) return
     setIsDraggingImage(true)
+    
     const rect = canvasRef.current.getBoundingClientRect()
-    const startX = e.clientX - rect.left
-    const startY = e.clientY - rect.top
+    const startX = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left
+    const startY = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMove = (e: MouseEvent | TouchEvent) => {
       if (!canvasRef.current) return
       const rect = canvasRef.current.getBoundingClientRect()
-      const maxOffset = 240 / 4 // Limit dragging to 1/4 of the image size
-      let newX = e.clientX - rect.left - startX + position.x
-      let newY = e.clientY - rect.top - startY + position.y
+      const maxOffset = 240 / 4
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
+      
+      let newX = clientX - rect.left - startX + position.x
+      let newY = clientY - rect.top - startY + position.y
       newX = Math.max(-maxOffset, Math.min(newX, maxOffset))
       newY = Math.max(-maxOffset, Math.min(newY, maxOffset))
       setPosition({ x: newX, y: newY })
     }
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsDraggingImage(false)
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', handleEnd)
+      document.removeEventListener('touchmove', handleMove)
+      document.removeEventListener('touchend', handleEnd)
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+    document.addEventListener('mousemove', handleMove)
+    document.addEventListener('mouseup', handleEnd)
+    document.addEventListener('touchmove', handleMove)
+    document.addEventListener('touchend', handleEnd)
   }
 
   useEffect(() => {
@@ -210,6 +218,7 @@ export function ProfilePhotoEditor() {
             <div 
               className="relative w-64 h-64 rounded-full overflow-hidden"
               onMouseDown={handleImageDragStart}
+              onTouchStart={handleImageDragStart}
               style={{ cursor: image ? (isDraggingImage ? 'grabbing' : 'grab') : 'default' }}
             >
               <canvas
