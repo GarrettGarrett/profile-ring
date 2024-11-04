@@ -15,6 +15,7 @@ function CornerIndicator({ className }: { className: string }) {
 export function ProfilePhotoEditor() {
   const searchParams = useSearchParams()
   const defaultColor = searchParams.get('color')?.replace('#', '') || 'FF5733'
+  const templateImage = searchParams.get('template')
   
   const [image, setImage] = useState<string | null>(null)
   const [color, setColor] = useState(`#${defaultColor.toUpperCase()}`)
@@ -156,9 +157,21 @@ export function ProfilePhotoEditor() {
     setIsDragging(false)
   }, [image])
 
+  useEffect(() => {
+    if (templateImage) {
+      fetch(templateImage)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], "template.png", { type: "image/png" })
+          processImage(file)
+        })
+        .catch(console.error)
+    }
+  }, [templateImage, processImage])
+
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className=" flex items-center justify-center p-4"
       onDragEnter={(e) => handleDrag(e, true)}
       onDragLeave={(e) => handleDrag(e, false)}
       onDragOver={(e) => e.preventDefault()}
